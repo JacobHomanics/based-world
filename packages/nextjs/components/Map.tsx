@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { GoogleMap, InfoWindow, LoadScript, Marker } from "@react-google-maps/api";
 import { formatEther } from "viem";
 // import { generatePrivateKey } from "viem/accounts";
@@ -127,6 +128,7 @@ export function Map() {
                   {locationScores[selectedMarker.address]}
                 </p>
                 {/* {selectedMarker.humanCount}</p> */}
+                {!connectedAddress && <ConnectButton />}
                 {connectedAddress &&
                   (isUserAlignedWithEntity ? (
                     <>
