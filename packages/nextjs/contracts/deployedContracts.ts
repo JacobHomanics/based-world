@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   8453: {
     AlignmentManagerV1: {
-      address: "0x0c81e1c3e2cfb9f247b809c06927f2bb5202c3e8",
+      address: "0xc5de80a4848367cbda73984cc1054cc08a975894",
       abi: [
         {
           type: "constructor",
@@ -24,6 +24,11 @@ const deployedContracts = {
             },
             {
               name: "costManagers",
+              type: "address[]",
+              internalType: "address[]",
+            },
+            {
+              name: "fundsManagers",
               type: "address[]",
               internalType: "address[]",
             },
@@ -59,6 +64,19 @@ const deployedContracts = {
         {
           type: "function",
           name: "DEFAULT_ADMIN_ROLE",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "FUNDS_MANAGER_ROLE",
           inputs: [],
           outputs: [
             {
@@ -123,6 +141,19 @@ const deployedContracts = {
               name: "",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getFundRecipient",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
             },
           ],
           stateMutability: "view",
@@ -303,6 +334,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "setFundRecipient",
+          inputs: [
+            {
+              name: "recipient",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
           name: "supportsInterface",
           inputs: [
             {
@@ -324,11 +368,6 @@ const deployedContracts = {
           type: "function",
           name: "withdraw",
           inputs: [
-            {
-              name: "_to",
-              type: "address",
-              internalType: "address",
-            },
             {
               name: "amount",
               type: "uint256",
@@ -458,7 +497,7 @@ const deployedContracts = {
       },
     },
     AlignmentV1: {
-      address: "0x1056d4ee7d2cbca3b1b8e8f923d2f14f75859ae2",
+      address: "0x5acf7407c3557ccb2b2327543314c5affd1c34ba",
       abi: [
         {
           type: "constructor",
@@ -833,6 +872,11 @@ const deployedContracts = {
               type: "address[]",
               internalType: "address[]",
             },
+            {
+              name: "fundsManagers",
+              type: "address[]",
+              internalType: "address[]",
+            },
           ],
           stateMutability: "nonpayable",
         },
@@ -865,6 +909,19 @@ const deployedContracts = {
         {
           type: "function",
           name: "DEFAULT_ADMIN_ROLE",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "FUNDS_MANAGER_ROLE",
           inputs: [],
           outputs: [
             {
@@ -929,6 +986,19 @@ const deployedContracts = {
               name: "",
               type: "uint256",
               internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getFundRecipient",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
             },
           ],
           stateMutability: "view",
@@ -1109,6 +1179,19 @@ const deployedContracts = {
         },
         {
           type: "function",
+          name: "setFundRecipient",
+          inputs: [
+            {
+              name: "recipient",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
           name: "supportsInterface",
           inputs: [
             {
@@ -1130,11 +1213,6 @@ const deployedContracts = {
           type: "function",
           name: "withdraw",
           inputs: [
-            {
-              name: "_to",
-              type: "address",
-              internalType: "address",
-            },
             {
               name: "amount",
               type: "uint256",
