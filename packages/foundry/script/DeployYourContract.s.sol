@@ -12,6 +12,8 @@ contract DeployYourContract is ScaffoldETHDeploy {
     address[] alignmentRemovers;
     address[] contractManagers;
     address[] costManagers;
+    address[] fundsManagers;
+    address fundRecipient;
 
     // use `deployer` from `ScaffoldETHDeploy`
     function run() external ScaffoldEthDeployerRunner {
@@ -26,16 +28,22 @@ contract DeployYourContract is ScaffoldETHDeploy {
             admins = [_deployer, 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
             contractManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
             costManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
+            fundsManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
+            fundRecipient = 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf;
         } else if (chainId == 84531) {
             // Base Sepolia (testnet)
             admins = [_deployer, 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf]; // You can change this to a different testnet address
             contractManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
             costManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
+            fundsManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
+            fundRecipient = 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf;
         } else {
             // Local development chain or other networks
             admins = [_deployer, 0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce]; // Default anvil account
             contractManagers = [0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce];
             costManagers = [0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce];
+            fundsManagers = [0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce];
+            fundRecipient = 0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce;
         }
 
         // Log which network and admin we're using
@@ -49,7 +57,8 @@ contract DeployYourContract is ScaffoldETHDeploy {
         AlignmentManagerV1 alignmentManager = new AlignmentManagerV1(
             admins,
             contractManagers,
-            costManagers
+            costManagers,
+            fundsManagers
         );
 
         alignmentAdders = [address(alignmentManager)];
@@ -70,12 +79,17 @@ contract DeployYourContract is ScaffoldETHDeploy {
         );
         alignmentManager.setAlignmentContract(address(alignment));
         alignmentManager.setAlignmentCost(0.00086 ether);
+        alignmentManager.setFundRecipient(fundRecipient);
         alignmentManager.revokeRole(
             alignmentManager.CONTRACT_MANAGER_ROLE(),
             _deployer
         );
         alignmentManager.revokeRole(
             alignmentManager.COST_MANAGER_ROLE(),
+            _deployer
+        );
+        alignmentManager.revokeRole(
+            alignmentManager.FUNDS_MANAGER_ROLE(),
             _deployer
         );
 

@@ -11,16 +11,20 @@ contract AlignmentManagerV1 is AccessControl {
     bytes32 public constant CONTRACT_MANAGER_ROLE =
         keccak256("CONTRACT_MANAGER_ROLE");
     bytes32 public constant COST_MANAGER_ROLE = keccak256("COST_MANAGER_ROLE");
+    bytes32 public constant FUNDS_MANAGER_ROLE =
+        keccak256("FUNDS_MANAGER_ROLE");
 
     AlignmentV1 s_alignmentContract;
     uint256 s_alignmentCost;
     mapping(address entity => uint256 alignmentScore) s_alignmentScore;
     mapping(address user => address[] locations) s_userAlignments;
+    address s_fundRecipient;
 
     constructor(
         address[] memory admins,
         address[] memory contractManagers,
-        address[] memory costManagers
+        address[] memory costManagers,
+        address[] memory fundsManagers
     ) {
         for (uint256 i = 0; i < admins.length; i++) {
             _grantRole(DEFAULT_ADMIN_ROLE, admins[i]);
@@ -31,6 +35,15 @@ contract AlignmentManagerV1 is AccessControl {
         for (uint256 i = 0; i < costManagers.length; i++) {
             _grantRole(COST_MANAGER_ROLE, costManagers[i]);
         }
+        for (uint256 i = 0; i < fundsManagers.length; i++) {
+            _grantRole(FUNDS_MANAGER_ROLE, fundsManagers[i]);
+        }
+    }
+
+    function setFundRecipient(
+        address recipient
+    ) external onlyRole(FUNDS_MANAGER_ROLE) {
+        s_fundRecipient = recipient;
     }
 
     function setAlignmentContract(
@@ -110,11 +123,8 @@ contract AlignmentManagerV1 is AccessControl {
         cost = s_alignmentCost;
     }
 
-    function withdraw(
-        address _to,
-        uint256 amount
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        (bool sent, ) = _to.call{value: amount}("");
+    function withdraw(uint256 amount) external onlyRole(FUNDS_MANAGER_ROLE) {
+        (bool sent, ) = s_fundRecipient.call{value: amount}("");
         require(sent, "Failed to send Ether");
     }
 }
