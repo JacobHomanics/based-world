@@ -129,7 +129,7 @@ export function Map() {
 
                 {isUserAlignedWithEntity ? (
                   <>
-                    <p className="text-green-600 text-2xl">You are Based with this country!</p>
+                    <p className="text-green-600 text-2xl">You are Based with this Region!</p>
                     <button
                       className="btn btn-primary btn-sm"
                       onClick={async () => {
