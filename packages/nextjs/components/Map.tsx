@@ -41,13 +41,7 @@ export function Map() {
 
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
 
-  const { data: isUserAligned, refetch: refetchIsUserAligned } = useScaffoldReadContract({
-    contractName: "AlignmentManagerV1",
-    functionName: "getIsUserAligned",
-    args: [connectedAddress],
-  });
-
-  const { data: userAlignedLocations } = useScaffoldReadContract({
+  const { data: userAlignedLocations, refetch: refetchUserAlignedLocations } = useScaffoldReadContract({
     contractName: "AlignmentManagerV1",
     functionName: "getUserAlignments",
     args: [connectedAddress],
@@ -142,8 +136,8 @@ export function Map() {
                           });
 
                           await fetchLocationScores();
-                          await refetchIsUserAligned();
                           await refetchIsUserAlignedWithEntity();
+                          await refetchUserAlignedLocations();
                         }}
                       >
                         {"Remove alignment"}
@@ -161,8 +155,8 @@ export function Map() {
                           });
 
                           await fetchLocationScores();
-                          await refetchIsUserAligned();
                           await refetchIsUserAlignedWithEntity();
+                          await refetchUserAlignedLocations();
                         }}
                       >
                         <p className="m-0 p-0">{`Get Based`}</p>
