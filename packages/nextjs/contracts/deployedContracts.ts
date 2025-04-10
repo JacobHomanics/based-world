@@ -6,8 +6,8 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
-    AlignmentManager: {
-      address: "0xf56aa3aceddf88ab12e494d0b96da3c09a5d264e",
+    AlignmentManagerV1: {
+      address: "0xd04ff4a75edd737a73e92b2f2274cb887d96e110",
       abi: [
         {
           type: "constructor",
@@ -50,6 +50,19 @@ const deployedContracts = {
           ],
           outputs: [],
           stateMutability: "payable",
+        },
+        {
+          type: "function",
+          name: "getAlignmentContract",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          stateMutability: "view",
         },
         {
           type: "function",
@@ -117,30 +130,6 @@ const deployedContracts = {
               name: "",
               type: "bytes32",
               internalType: "bytes32",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
-          name: "getUserAlignmentWithEntity",
-          inputs: [
-            {
-              name: "entity",
-              type: "address",
-              internalType: "address",
-            },
-            {
-              name: "user",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "isAligned",
-              type: "bool",
-              internalType: "bool",
             },
           ],
           stateMutability: "view",
@@ -437,8 +426,8 @@ const deployedContracts = {
           "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
       },
     },
-    Alignment: {
-      address: "0xdbd296711ec8ef9aacb623ee3f1c0922dce0d7b2",
+    AlignmentV1: {
+      address: "0xc6b8fbf96cf7bbe45576417ec2163acecfa88ecc",
       abi: [
         {
           type: "constructor",

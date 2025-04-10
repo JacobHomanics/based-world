@@ -3,7 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract Alignment is AccessControl {
+contract AlignmentV1 is AccessControl {
     mapping(address entity => mapping(address user => bool isAligned)) s_isUserAlignedToLocation;
 
     constructor(address admin) {

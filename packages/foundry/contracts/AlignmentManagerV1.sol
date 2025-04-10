@@ -2,21 +2,15 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
-import "./Alignment.sol";
+import "./AlignmentV1.sol";
 
-contract AlignmentManager is AccessControl {
+contract AlignmentManagerV1 is AccessControl {
     error NotEnoughEther();
 
-    Alignment s_alignment;
+    AlignmentV1 s_alignmentContract;
     uint256 s_alignmentCost;
     mapping(address entity => uint256 alignmentScore) s_alignmentScore;
     mapping(address user => address[] locations) s_userAlignments;
-
-    function getUserAlignments(
-        address user
-    ) external view returns (address[] memory) {
-        return s_userAlignments[user];
-    }
 
     constructor(address admin, uint256 alignmentCost) {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
@@ -26,7 +20,13 @@ contract AlignmentManager is AccessControl {
     function setAlignmentContract(
         address alignmentContract
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        s_alignment = Alignment(alignmentContract);
+        s_alignmentContract = AlignmentV1(alignmentContract);
+    }
+
+    function setAlignmentCost(
+        uint256 newCost
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        s_alignmentCost = newCost;
     }
 
     function addAlignment(address entity) external payable {
@@ -35,17 +35,13 @@ contract AlignmentManager is AccessControl {
         }
 
         s_alignmentScore[entity]++;
-        s_alignment.addAlignment(entity, msg.sender);
         s_userAlignments[msg.sender].push(entity);
-    }
-
-    function getIsUserAligned(
-        address user
-    ) external view returns (bool isAligned) {
-        isAligned = s_userAlignments[user].length > 0;
+        s_alignmentContract.addAlignment(entity, msg.sender);
     }
 
     function removeAlignment(address entity) external payable {
+        s_alignmentScore[entity]--;
+
         address[] storage userLocations = s_userAlignments[msg.sender];
         bool found = false;
         uint256 indexToRemove;
@@ -69,8 +65,19 @@ contract AlignmentManager is AccessControl {
             userLocations.pop();
         }
 
-        s_alignmentScore[entity]--;
-        s_alignment.removeAlignment(entity, msg.sender);
+        s_alignmentContract.removeAlignment(entity, msg.sender);
+    }
+
+    function getIsUserAligned(
+        address user
+    ) external view returns (bool isAligned) {
+        isAligned = s_userAlignments[user].length > 0;
+    }
+
+    function getUserAlignments(
+        address user
+    ) external view returns (address[] memory) {
+        return s_userAlignments[user];
     }
 
     function getEntityAlignmentScore(
@@ -79,21 +86,12 @@ contract AlignmentManager is AccessControl {
         return s_alignmentScore[location];
     }
 
-    function setAlignmentCost(
-        uint256 newCost
-    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        s_alignmentCost = newCost;
+    function getAlignmentContract() external view returns (address) {
+        return address(s_alignmentContract);
     }
 
     function getAlignmentCost() external view returns (uint256 cost) {
         cost = s_alignmentCost;
-    }
-
-    function getUserAlignmentWithEntity(
-        address entity,
-        address user
-    ) external view returns (bool isAligned) {
-        isAligned = s_alignment.getUserAlignmentWithEntity(entity, user);
     }
 
     function withdraw(

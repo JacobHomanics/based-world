@@ -47,20 +47,20 @@ export function Map() {
   //   });
 
   const { data: userAlignedLocations } = useScaffoldReadContract({
-    contractName: "AlignmentManager",
+    contractName: "AlignmentManagerV1",
     functionName: "getUserAlignments",
     args: [connectedAddress],
   });
 
   const { data: alignmentCost } = useScaffoldReadContract({
-    contractName: "AlignmentManager",
+    contractName: "AlignmentManagerV1",
     functionName: "getAlignmentCost",
   });
 
   const [locationScores, setLocationScores] = useState<{ [key: string]: number }>({});
 
   const { data: alignmentManager } = useScaffoldContract({
-    contractName: "AlignmentManager",
+    contractName: "AlignmentManagerV1",
   });
 
   useEffect(
@@ -83,12 +83,12 @@ export function Map() {
   );
 
   const { data: isUserAlignedWithEntity } = useScaffoldReadContract({
-    contractName: "Alignment",
+    contractName: "AlignmentV1",
     functionName: "getUserAlignmentWithEntity",
     args: [selectedMarker?.address, connectedAddress],
   });
 
-  const { writeContractAsync: writeAlignmentManagerAsync } = useScaffoldWriteContract("AlignmentManager");
+  const { writeContractAsync: writeAlignmentManagerAsync } = useScaffoldWriteContract("AlignmentManagerV1");
 
   //   const [isOpen, setIsOpen] = useState(false);
 
@@ -121,8 +121,10 @@ export function Map() {
               onCloseClick={() => setSelectedMarker(null)} // Close InfoWindow on click
             >
               <div className="p-4 text-center bg-base-300 m-4 rounded-lg items-center flex justify-center flex-col">
-                <h2 className="m-0 text-xl md:text-4xl">{selectedMarker.title}</h2>
-                <p className="m-0 text-2xl md:text-6xl">{locationScores[selectedMarker.address]}</p>
+                <p className="m-0 text-xl md:text-4xl text-black dark:text-white">{selectedMarker.title}</p>
+                <p className="m-0 text-2xl md:text-6xl text-black dark:text-white">
+                  {locationScores[selectedMarker.address]}
+                </p>
                 {/* {selectedMarker.humanCount}</p> */}
 
                 {isUserAlignedWithEntity ? (
@@ -153,18 +155,20 @@ export function Map() {
           )}
         </GoogleMap>
       </LoadScript>
-      <div className="flex flex-wrap items-center justify-center gap-10 bg-primary">
-        <div>
-          <p className="text-center">{"You are Based in: "}</p>
 
-          <p className="text-center">
-            {userAlignedLocations
-              ?.map((location: any) => locations.find(marker => marker.address === location)?.title)
-              .join(", ")}
-          </p>
-        </div>
+      {userAlignedLocations && userAlignedLocations.length > 0 && (
+        <div className="flex flex-wrap items-center justify-center gap-10 bg-primary">
+          <div>
+            <p className="text-center">{"You are Based in: "}</p>
 
-        {/* <div>
+            <p className="text-center">
+              {userAlignedLocations
+                ?.map((location: any) => locations.find(marker => marker.address === location)?.title)
+                .join(", ")}
+            </p>
+          </div>
+
+          {/* <div>
           <p className="text-center">{"Don't see your country?"}</p>
           <button
             className="btn btn-lg btn-secondary w-[150px]"
@@ -180,7 +184,8 @@ export function Map() {
             {"Add it!"}
           </button>
         </div> */}
-      </div>
+        </div>
+      )}
 
       {/* {isOpen && (
         <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex items-center justify-center overflow-y-auto">

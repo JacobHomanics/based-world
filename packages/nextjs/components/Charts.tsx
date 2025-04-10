@@ -4,7 +4,7 @@ import { useScaffoldContract } from "~~/hooks/scaffold-eth";
 
 export function Charts() {
   const { data: alignmentManager } = useScaffoldContract({
-    contractName: "AlignmentManager",
+    contractName: "AlignmentManagerV1",
   });
 
   const [locationScores, setLocationScores] = useState<{ [key: string]: number }>({});
