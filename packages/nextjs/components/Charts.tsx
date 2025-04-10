@@ -9,19 +9,19 @@ export function Charts() {
 
   const [locationScores, setLocationScores] = useState<{ [key: string]: number }>({});
 
+  const fetchLocationScores = async () => {
+    if (!alignmentManager) return;
+
+    const scores: { [key: string]: number } = {};
+    for (const location of locations) {
+      const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
+      scores[location.address] = Number(score);
+    }
+    setLocationScores(scores);
+  };
+
   useEffect(
     () => {
-      const fetchLocationScores = async () => {
-        if (!alignmentManager) return;
-
-        const scores: { [key: string]: number } = {};
-        for (const location of locations) {
-          const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
-          scores[location.address] = Number(score);
-        }
-        setLocationScores(scores);
-      };
-
       fetchLocationScores();
     },
     // eslint-disable-next-line

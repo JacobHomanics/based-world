@@ -41,11 +41,11 @@ export function Map() {
 
   const [selectedMarker, setSelectedMarker] = useState<any>(null);
 
-  //   const { data: isUserAligned, refetch: refetchIsUserAligned } = useScaffoldReadContract({
-  //     contractName: "YourContractManager",
-  //     functionName: "getIsUserAligned",
-  //     args: [connectedAddress],
-  //   });
+  const { data: isUserAligned, refetch: refetchIsUserAligned } = useScaffoldReadContract({
+    contractName: "AlignmentManagerV1",
+    functionName: "getIsUserAligned",
+    args: [connectedAddress],
+  });
 
   const { data: userAlignedLocations } = useScaffoldReadContract({
     contractName: "AlignmentManagerV1",
@@ -64,26 +64,26 @@ export function Map() {
     contractName: "AlignmentManagerV1",
   });
 
+  const fetchLocationScores = async () => {
+    if (!alignmentManager) return;
+
+    const scores: { [key: string]: number } = {};
+    for (const location of locations) {
+      const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
+      scores[location.address] = Number(score);
+    }
+    setLocationScores(scores);
+  };
+
   useEffect(
     () => {
-      const fetchLocationScores = async () => {
-        if (!alignmentManager) return;
-
-        const scores: { [key: string]: number } = {};
-        for (const location of locations) {
-          const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
-          scores[location.address] = Number(score);
-        }
-        setLocationScores(scores);
-      };
-
       fetchLocationScores();
     },
     // eslint-disable-next-line
     [alignmentManager?.address],
   );
 
-  const { data: isUserAlignedWithEntity } = useScaffoldReadContract({
+  const { data: isUserAlignedWithEntity, refetch: refetchIsUserAlignedWithEntity } = useScaffoldReadContract({
     contractName: "AlignmentV1",
     functionName: "getUserAlignmentWithEntity",
     args: [selectedMarker?.address, connectedAddress],
@@ -140,6 +140,10 @@ export function Map() {
                             functionName: "removeAlignment",
                             args: [selectedMarker?.address],
                           });
+
+                          await fetchLocationScores();
+                          await refetchIsUserAligned();
+                          await refetchIsUserAlignedWithEntity();
                         }}
                       >
                         {"Remove alignment"}
@@ -156,7 +160,9 @@ export function Map() {
                             args: [selectedMarker?.address],
                           });
 
-                          // await refetchIsUserAligned();
+                          await fetchLocationScores();
+                          await refetchIsUserAligned();
+                          await refetchIsUserAlignedWithEntity();
                         }}
                       >
                         <p className="m-0 p-0">{`Get Based`}</p>
