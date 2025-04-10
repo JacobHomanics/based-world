@@ -15,7 +15,7 @@ contract DeployYourContract is ScaffoldETHDeploy {
 
         YourContractManager yourContractManager = new YourContractManager(
             _deployer,
-            .1 ether
+            0.00086 ether
         );
 
         YourContract yourContract = new YourContract(

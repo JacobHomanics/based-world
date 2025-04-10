@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     YourContractManager: {
-      address: "0xd04ff4a75edd737a73e92b2f2274cb887d96e110",
+      address: "0x33b1b5aa9aa4da83a332f0bc5cac6a903fde5d92",
       abi: [
         {
           type: "constructor",
@@ -296,9 +296,14 @@ const deployedContracts = {
               type: "address",
               internalType: "address",
             },
+            {
+              name: "amount",
+              type: "uint256",
+              internalType: "uint256",
+            },
           ],
           outputs: [],
-          stateMutability: "payable",
+          stateMutability: "nonpayable",
         },
         {
           type: "event",
@@ -420,7 +425,7 @@ const deployedContracts = {
       },
     },
     YourContract: {
-      address: "0xc6b8fbf96cf7bbe45576417ec2163acecfa88ecc",
+      address: "0x19a1c09fe3399c4daaa2c98b936a8e460fc5eaa4",
       abi: [
         {
           type: "constructor",

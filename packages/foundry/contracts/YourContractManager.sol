@@ -80,10 +80,17 @@ contract YourContractManager is AccessControl {
     }
 
     function withdraw(
-        address _to
-    ) external payable onlyRole(DEFAULT_ADMIN_ROLE) {
-        (bool sent, ) = _to.call{value: msg.value}("");
+        address _to,
+        uint256 amount
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        (bool sent, ) = _to.call{value: amount}("");
         require(sent, "Failed to send Ether");
+    }
+
+    function setAlignmentCost(
+        uint256 newCost
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        s_alignmentCost = newCost;
     }
 
     function getAlignmentCost() external view returns (uint256 cost) {
