@@ -123,6 +123,10 @@ contract AlignmentManagerV1 is AccessControl {
         cost = s_alignmentCost;
     }
 
+    function getFundRecipient() external view returns (address) {
+        return s_fundRecipient;
+    }
+
     function withdraw(uint256 amount) external onlyRole(FUNDS_MANAGER_ROLE) {
         (bool sent, ) = s_fundRecipient.call{value: amount}("");
         require(sent, "Failed to send Ether");

@@ -77,6 +77,12 @@ contract DeployYourContract is ScaffoldETHDeploy {
             alignmentManager.COST_MANAGER_ROLE(),
             _deployer
         );
+
+        alignmentManager.grantRole(
+            alignmentManager.FUNDS_MANAGER_ROLE(),
+            _deployer
+        );
+
         alignmentManager.setAlignmentContract(address(alignment));
         alignmentManager.setAlignmentCost(0.00086 ether);
         alignmentManager.setFundRecipient(fundRecipient);
