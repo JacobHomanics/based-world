@@ -8,7 +8,7 @@ import { parseEther, zeroAddress } from "viem";
 import { generatePrivateKey } from "viem/accounts";
 import { privateKeyToAddress } from "viem/accounts";
 import { useAccount } from "wagmi";
-import { Popup } from "~~/components/Popup";
+// import { Popup } from "~~/components/Popup";
 import { useScaffoldContract, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const Home: NextPage = () => {
@@ -99,7 +99,7 @@ const Home: NextPage = () => {
     fetchLocationScores();
   }, [yourContractManager?.address, userAlignedLocations?.length]);
 
-  const { data: isUserAlignedWithCountry, refetch: refetchIsUserAlignedWithCountry } = useScaffoldReadContract({
+  const { data: isUserAlignedWithCountry } = useScaffoldReadContract({
     contractName: "YourContract",
     functionName: "getUserAlignmentWithCountry",
     args: [selectedMarker?.address, connectedAddress],
