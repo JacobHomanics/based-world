@@ -7,22 +7,35 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./DeployHelpers.s.sol";
 
 contract DeployYourContract is ScaffoldETHDeploy {
+    address[] admins;
+    address[] alignmentAdders;
+    address[] alignmentRemovers;
+    address[] contractManagers;
+    address[] costManagers;
+
     // use `deployer` from `ScaffoldETHDeploy`
     function run() external ScaffoldEthDeployerRunner {
+        (, address _deployer, ) = vm.readCallers();
+
         // Get the chain ID to determine which network we're on
         uint256 chainId = block.chainid;
-        address admin;
 
         // Set admin address based on the network
         if (chainId == 8453) {
             // Base Mainnet
-            admin = 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf;
+            admins = [_deployer, 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
+            contractManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
+            costManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
         } else if (chainId == 84531) {
             // Base Sepolia (testnet)
-            admin = 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf; // You can change this to a different testnet address
+            admins = [_deployer, 0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf]; // You can change this to a different testnet address
+            contractManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
+            costManagers = [0xc0f0E1512D6A0A77ff7b9C172405D1B0d73565Bf];
         } else {
             // Local development chain or other networks
-            admin = 0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce; // Default anvil account
+            admins = [_deployer, 0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce]; // Default anvil account
+            contractManagers = [0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce];
+            costManagers = [0xCbEbcc04B4A5fA18089695AB357fD149c7862Cce];
         }
 
         // Log which network and admin we're using
@@ -30,22 +43,41 @@ contract DeployYourContract is ScaffoldETHDeploy {
             string.concat("Deploying on chain ID: ", vm.toString(chainId))
         );
         console.logString(
-            string.concat("Using admin address: ", vm.toString(admin))
+            string.concat("Using admin address: ", vm.toString(admins[0]))
         );
-
-        (, address _deployer, ) = vm.readCallers();
 
         AlignmentManagerV1 alignmentManager = new AlignmentManagerV1(
-            _deployer,
-            0.00086 ether
+            admins,
+            contractManagers,
+            costManagers
         );
 
-        AlignmentV1 alignment = new AlignmentV1(address(alignmentManager));
+        alignmentAdders = [address(alignmentManager)];
+        alignmentRemovers = [address(alignmentManager)];
+        AlignmentV1 alignment = new AlignmentV1(
+            admins,
+            alignmentAdders,
+            alignmentRemovers
+        );
 
+        alignmentManager.grantRole(
+            alignmentManager.CONTRACT_MANAGER_ROLE(),
+            _deployer
+        );
+        alignmentManager.grantRole(
+            alignmentManager.COST_MANAGER_ROLE(),
+            _deployer
+        );
         alignmentManager.setAlignmentContract(address(alignment));
-
-        alignmentManager.grantRole(0x00, admin);
-        alignmentManager.revokeRole(0x00, _deployer);
+        alignmentManager.setAlignmentCost(0.00086 ether);
+        alignmentManager.revokeRole(
+            alignmentManager.CONTRACT_MANAGER_ROLE(),
+            _deployer
+        );
+        alignmentManager.revokeRole(
+            alignmentManager.COST_MANAGER_ROLE(),
+            _deployer
+        );
 
         console.logString(
             string.concat(

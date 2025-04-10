@@ -130,6 +130,17 @@ export function Map() {
                 {isUserAlignedWithEntity ? (
                   <>
                     <p className="text-green-600 text-2xl">You are Based with this country!</p>
+                    <button
+                      className="btn btn-primary btn-sm"
+                      onClick={async () => {
+                        await writeAlignmentManagerAsync({
+                          functionName: "removeAlignment",
+                          args: [selectedMarker?.address],
+                        });
+                      }}
+                    >
+                      {"Remove alignment"}
+                    </button>
                   </>
                 ) : (
                   <>

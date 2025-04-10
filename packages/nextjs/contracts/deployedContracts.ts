@@ -7,23 +7,54 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     AlignmentManagerV1: {
-      address: "0xd04ff4a75edd737a73e92b2f2274cb887d96e110",
+      address: "0x6d014319e0f36651997697c98da594c7cf235fa4",
       abi: [
         {
           type: "constructor",
           inputs: [
             {
-              name: "admin",
-              type: "address",
-              internalType: "address",
+              name: "admins",
+              type: "address[]",
+              internalType: "address[]",
             },
             {
-              name: "alignmentCost",
-              type: "uint256",
-              internalType: "uint256",
+              name: "contractManagers",
+              type: "address[]",
+              internalType: "address[]",
+            },
+            {
+              name: "costManagers",
+              type: "address[]",
+              internalType: "address[]",
             },
           ],
           stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "CONTRACT_MANAGER_ROLE",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "COST_MANAGER_ROLE",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
         },
         {
           type: "function",
@@ -427,18 +458,54 @@ const deployedContracts = {
       },
     },
     AlignmentV1: {
-      address: "0xc6b8fbf96cf7bbe45576417ec2163acecfa88ecc",
+      address: "0x5621d0b4d8043524ac5837918d6a95b1050ef228",
       abi: [
         {
           type: "constructor",
           inputs: [
             {
-              name: "admin",
-              type: "address",
-              internalType: "address",
+              name: "admins",
+              type: "address[]",
+              internalType: "address[]",
+            },
+            {
+              name: "alignmentAdders",
+              type: "address[]",
+              internalType: "address[]",
+            },
+            {
+              name: "alignmentRemovers",
+              type: "address[]",
+              internalType: "address[]",
             },
           ],
           stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "ALIGNMENT_ADDER_ROLE",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "ALIGNMENT_REMOVER_ROLE",
+          inputs: [],
+          outputs: [
+            {
+              name: "",
+              type: "bytes32",
+              internalType: "bytes32",
+            },
+          ],
+          stateMutability: "view",
         },
         {
           type: "function",
