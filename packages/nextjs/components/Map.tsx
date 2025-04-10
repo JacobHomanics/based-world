@@ -47,30 +47,30 @@ export function Map() {
   //   });
 
   const { data: userAlignedLocations } = useScaffoldReadContract({
-    contractName: "YourContractManager",
-    functionName: "getUserLocations",
+    contractName: "AlignmentManager",
+    functionName: "getUserAlignments",
     args: [connectedAddress],
   });
 
   const { data: alignmentCost } = useScaffoldReadContract({
-    contractName: "YourContractManager",
+    contractName: "AlignmentManager",
     functionName: "getAlignmentCost",
   });
 
   const [locationScores, setLocationScores] = useState<{ [key: string]: number }>({});
 
-  const { data: yourContractManager } = useScaffoldContract({
-    contractName: "YourContractManager",
+  const { data: alignmentManager } = useScaffoldContract({
+    contractName: "AlignmentManager",
   });
 
   useEffect(
     () => {
       const fetchLocationScores = async () => {
-        if (!yourContractManager || !userAlignedLocations) return;
+        if (!alignmentManager || !userAlignedLocations) return;
 
         const scores: { [key: string]: number } = {};
         for (const location of locations) {
-          const score = await yourContractManager.read.getLocationAlignmentScore([location.address]);
+          const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
           scores[location.address] = Number(score);
         }
         setLocationScores(scores);
@@ -79,16 +79,16 @@ export function Map() {
       fetchLocationScores();
     },
     // eslint-disable-next-line
-    [yourContractManager?.address, userAlignedLocations?.length],
+    [alignmentManager?.address, userAlignedLocations?.length],
   );
 
-  const { data: isUserAlignedWithCountry } = useScaffoldReadContract({
-    contractName: "YourContract",
-    functionName: "getUserAlignmentWithCountry",
+  const { data: isUserAlignedWithEntity } = useScaffoldReadContract({
+    contractName: "Alignment",
+    functionName: "getUserAlignmentWithEntity",
     args: [selectedMarker?.address, connectedAddress],
   });
 
-  const { writeContractAsync: writeYourContractManagerAsync } = useScaffoldWriteContract("YourContractManager");
+  const { writeContractAsync: writeAlignmentManagerAsync } = useScaffoldWriteContract("AlignmentManager");
 
   //   const [isOpen, setIsOpen] = useState(false);
 
@@ -125,7 +125,7 @@ export function Map() {
                 <p className="m-0 text-2xl md:text-6xl">{locationScores[selectedMarker.address]}</p>
                 {/* {selectedMarker.humanCount}</p> */}
 
-                {isUserAlignedWithCountry ? (
+                {isUserAlignedWithEntity ? (
                   <>
                     <p className="text-green-600 text-2xl">You are Based with this country!</p>
                   </>
@@ -134,7 +134,7 @@ export function Map() {
                     <button
                       className="btn btn-primary w-44 flex flex-col"
                       onClick={async () => {
-                        await writeYourContractManagerAsync({
+                        await writeAlignmentManagerAsync({
                           functionName: "addAlignment",
                           value: alignmentCost,
                           args: [selectedMarker?.address],

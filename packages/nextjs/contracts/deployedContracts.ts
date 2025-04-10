@@ -6,8 +6,8 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 
 const deployedContracts = {
   31337: {
-    YourContractManager: {
-      address: "0x33b1b5aa9aa4da83a332f0bc5cac6a903fde5d92",
+    AlignmentManager: {
+      address: "0xf56aa3aceddf88ab12e494d0b96da3c09a5d264e",
       abi: [
         {
           type: "constructor",
@@ -43,7 +43,7 @@ const deployedContracts = {
           name: "addAlignment",
           inputs: [
             {
-              name: "country",
+              name: "entity",
               type: "address",
               internalType: "address",
             },
@@ -58,6 +58,25 @@ const deployedContracts = {
           outputs: [
             {
               name: "cost",
+              type: "uint256",
+              internalType: "uint256",
+            },
+          ],
+          stateMutability: "view",
+        },
+        {
+          type: "function",
+          name: "getEntityAlignmentScore",
+          inputs: [
+            {
+              name: "location",
+              type: "address",
+              internalType: "address",
+            },
+          ],
+          outputs: [
+            {
+              name: "",
               type: "uint256",
               internalType: "uint256",
             },
@@ -85,25 +104,6 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "getLocationAlignmentScore",
-          inputs: [
-            {
-              name: "location",
-              type: "address",
-              internalType: "address",
-            },
-          ],
-          outputs: [
-            {
-              name: "",
-              type: "uint256",
-              internalType: "uint256",
-            },
-          ],
-          stateMutability: "view",
-        },
-        {
-          type: "function",
           name: "getRoleAdmin",
           inputs: [
             {
@@ -123,10 +123,10 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "getUserAlignmentWithCountry",
+          name: "getUserAlignmentWithEntity",
           inputs: [
             {
-              name: "country",
+              name: "entity",
               type: "address",
               internalType: "address",
             },
@@ -147,7 +147,7 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "getUserLocations",
+          name: "getUserAlignments",
           inputs: [
             {
               name: "user",
@@ -211,7 +211,7 @@ const deployedContracts = {
           name: "removeAlignment",
           inputs: [
             {
-              name: "country",
+              name: "entity",
               type: "address",
               internalType: "address",
             },
@@ -257,12 +257,25 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "setYourContract",
+          name: "setAlignmentContract",
           inputs: [
             {
-              name: "yourContract",
+              name: "alignmentContract",
               type: "address",
               internalType: "address",
+            },
+          ],
+          outputs: [],
+          stateMutability: "nonpayable",
+        },
+        {
+          type: "function",
+          name: "setAlignmentCost",
+          inputs: [
+            {
+              name: "newCost",
+              type: "uint256",
+              internalType: "uint256",
             },
           ],
           outputs: [],
@@ -424,8 +437,8 @@ const deployedContracts = {
           "lib/openzeppelin-contracts/contracts/access/AccessControl.sol",
       },
     },
-    YourContract: {
-      address: "0x19a1c09fe3399c4daaa2c98b936a8e460fc5eaa4",
+    Alignment: {
+      address: "0xdbd296711ec8ef9aacb623ee3f1c0922dce0d7b2",
       abi: [
         {
           type: "constructor",
@@ -456,7 +469,7 @@ const deployedContracts = {
           name: "addAlignment",
           inputs: [
             {
-              name: "country",
+              name: "entity",
               type: "address",
               internalType: "address",
             },
@@ -490,10 +503,10 @@ const deployedContracts = {
         },
         {
           type: "function",
-          name: "getUserAlignmentWithCountry",
+          name: "getUserAlignmentWithEntity",
           inputs: [
             {
-              name: "country",
+              name: "entity",
               type: "address",
               internalType: "address",
             },
@@ -559,7 +572,7 @@ const deployedContracts = {
           name: "removeAlignment",
           inputs: [
             {
-              name: "country",
+              name: "entity",
               type: "address",
               internalType: "address",
             },

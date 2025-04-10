@@ -3,31 +3,31 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract YourContract is AccessControl {
-    mapping(address location => mapping(address user => bool isAligned)) s_isUserAlignedToLocation;
+contract Alignment is AccessControl {
+    mapping(address entity => mapping(address user => bool isAligned)) s_isUserAlignedToLocation;
 
     constructor(address admin) {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
     }
 
     function addAlignment(
-        address country,
+        address entity,
         address user
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        s_isUserAlignedToLocation[country][user] = true;
+        s_isUserAlignedToLocation[entity][user] = true;
     }
 
     function removeAlignment(
-        address country,
+        address entity,
         address user
     ) external onlyRole(DEFAULT_ADMIN_ROLE) {
-        s_isUserAlignedToLocation[country][user] = false;
+        s_isUserAlignedToLocation[entity][user] = false;
     }
 
-    function getUserAlignmentWithCountry(
-        address country,
+    function getUserAlignmentWithEntity(
+        address entity,
         address user
     ) external view returns (bool isAligned) {
-        isAligned = s_isUserAlignedToLocation[country][user];
+        isAligned = s_isUserAlignedToLocation[entity][user];
     }
 }

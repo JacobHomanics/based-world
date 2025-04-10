@@ -1,8 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import "../contracts/YourContract.sol";
-import "../contracts/YourContractManager.sol";
+import "../contracts/Alignment.sol";
+import "../contracts/AlignmentManager.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 import "./DeployHelpers.s.sol";
 
@@ -13,24 +13,29 @@ contract DeployYourContract is ScaffoldETHDeploy {
 
         (, address _deployer, ) = vm.readCallers();
 
-        YourContractManager yourContractManager = new YourContractManager(
+        AlignmentManager alignmentManager = new AlignmentManager(
             _deployer,
             0.00086 ether
         );
 
-        YourContract yourContract = new YourContract(
-            address(yourContractManager)
-        );
+        Alignment alignment = new Alignment(address(alignmentManager));
 
-        yourContractManager.setYourContract(address(yourContract));
+        alignmentManager.setAlignmentContract(address(alignment));
 
-        yourContractManager.grantRole(0x00, admin);
-        yourContractManager.revokeRole(0x00, _deployer);
+        alignmentManager.grantRole(0x00, admin);
+        alignmentManager.revokeRole(0x00, _deployer);
 
         console.logString(
             string.concat(
-                "YourContract deployed at: ",
-                vm.toString(address(yourContract))
+                "Alignment deployed at: ",
+                vm.toString(address(alignment))
+            )
+        );
+
+        console.logString(
+            string.concat(
+                "AlignmentManager deployed at: ",
+                vm.toString(address(alignmentManager))
             )
         );
     }

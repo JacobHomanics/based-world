@@ -3,8 +3,8 @@ import { locations } from "../locations.config";
 import { useScaffoldContract } from "~~/hooks/scaffold-eth";
 
 export function Charts() {
-  const { data: yourContractManager } = useScaffoldContract({
-    contractName: "YourContractManager",
+  const { data: alignmentManager } = useScaffoldContract({
+    contractName: "AlignmentManager",
   });
 
   const [locationScores, setLocationScores] = useState<{ [key: string]: number }>({});
@@ -12,11 +12,11 @@ export function Charts() {
   useEffect(
     () => {
       const fetchLocationScores = async () => {
-        if (!yourContractManager) return;
+        if (!alignmentManager) return;
 
         const scores: { [key: string]: number } = {};
         for (const location of locations) {
-          const score = await yourContractManager.read.getLocationAlignmentScore([location.address]);
+          const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
           scores[location.address] = Number(score);
         }
         setLocationScores(scores);
@@ -25,7 +25,7 @@ export function Charts() {
       fetchLocationScores();
     },
     // eslint-disable-next-line
-    [yourContractManager?.address],
+    [alignmentManager?.address],
   );
 
   return (
