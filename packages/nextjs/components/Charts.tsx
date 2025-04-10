@@ -1,31 +1,53 @@
 import { useEffect, useState } from "react";
 import { locations } from "../locations.config";
+import { createPublicClient, http } from "viem";
+import { base } from "viem/chains";
 import { useScaffoldContract } from "~~/hooks/scaffold-eth";
 
 export function Charts() {
-  const { data: alignmentManager } = useScaffoldContract({
+  const { data: alignmentManagerContract } = useScaffoldContract({
     contractName: "AlignmentManagerV1",
   });
 
   const [locationScores, setLocationScores] = useState<{ [key: string]: number }>({});
 
+  // Get contract address from scaffold data
+  const alignmentManagerAddress = alignmentManagerContract?.address;
+
   useEffect(
     () => {
       const fetchLocationScores = async () => {
-        if (!alignmentManager) return;
+        if (!alignmentManagerAddress) return;
 
-        const scores: { [key: string]: number } = {};
-        for (const location of locations) {
-          const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
-          scores[location.address] = Number(score);
+        const publicClient = createPublicClient({
+          chain: base,
+          transport: http("https://base-mainnet.g.alchemy.com/v2/KxBqE7ph5mmk766FOmr1JkVuPrvgowW9"),
+        });
+
+        try {
+          const scores: { [key: string]: number } = {};
+
+          for (const location of locations) {
+            const score = await publicClient.readContract({
+              address: alignmentManagerAddress,
+              abi: alignmentManagerContract.abi,
+              functionName: "getEntityAlignmentScore",
+              args: [location.address],
+            });
+
+            scores[location.address] = Number(score);
+          }
+
+          setLocationScores(scores);
+        } catch (error) {
+          console.error("Error fetching location scores:", error);
         }
-        setLocationScores(scores);
       };
 
       fetchLocationScores();
     },
     // eslint-disable-next-line
-    [alignmentManager?.address],
+    [alignmentManagerAddress],
   );
 
   return (

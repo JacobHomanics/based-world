@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { GoogleMap, InfoWindow, LoadScript, Marker } from "@react-google-maps/api";
-import { formatEther } from "viem";
+import { createPublicClient, formatEther, http } from "viem";
+import { base } from "viem/chains";
 // import { generatePrivateKey } from "viem/accounts";
 // import { privateKeyToAddress } from "viem/accounts";
 import { useAccount } from "wagmi";
@@ -59,27 +60,48 @@ export function Map() {
 
   const [locationScores, setLocationScores] = useState<{ [key: string]: number }>({});
 
-  const { data: alignmentManager } = useScaffoldContract({
+  // Replace scaffold-eth hook with raw wagmi
+  const { data: alignmentManagerContract } = useScaffoldContract({
     contractName: "AlignmentManagerV1",
   });
+
+  // Get contract address from scaffold data
+  const alignmentManagerAddress = alignmentManagerContract?.address;
 
   useEffect(
     () => {
       const fetchLocationScores = async () => {
-        if (!alignmentManager || !userAlignedLocations) return;
+        if (!alignmentManagerAddress) return;
 
-        const scores: { [key: string]: number } = {};
-        for (const location of locations) {
-          const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
-          scores[location.address] = Number(score);
+        const publicClient = createPublicClient({
+          chain: base,
+          transport: http("https://base-mainnet.g.alchemy.com/v2/KxBqE7ph5mmk766FOmr1JkVuPrvgowW9"),
+        });
+
+        try {
+          const scores: { [key: string]: number } = {};
+
+          for (const location of locations) {
+            const score = await publicClient.readContract({
+              address: alignmentManagerAddress,
+              abi: alignmentManagerContract.abi,
+              functionName: "getEntityAlignmentScore",
+              args: [location.address],
+            });
+
+            scores[location.address] = Number(score);
+          }
+
+          setLocationScores(scores);
+        } catch (error) {
+          console.error("Error fetching location scores:", error);
         }
-        setLocationScores(scores);
       };
 
       fetchLocationScores();
     },
     // eslint-disable-next-line
-    [alignmentManager?.address, userAlignedLocations?.length],
+    [alignmentManagerAddress],
   );
 
   const { data: isUserAlignedWithEntity } = useScaffoldReadContract({
@@ -122,45 +144,48 @@ export function Map() {
             >
               <div className="p-4 text-center bg-base-300 m-4 rounded-lg items-center flex justify-center flex-col">
                 <p className="m-0 text-xl md:text-4xl text-black dark:text-white">{selectedMarker.title}</p>
+
+                <p className="m-0 text-2xl md:text-xl text-black dark:text-white">Pledges</p>
                 <p className="m-0 text-2xl md:text-6xl text-black dark:text-white">
                   {locationScores[selectedMarker.address]}
                 </p>
                 {/* {selectedMarker.humanCount}</p> */}
 
-                {isUserAlignedWithEntity ? (
-                  <>
-                    <p className="text-green-600 text-2xl">You are Based with this Region!</p>
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={async () => {
-                        await writeAlignmentManagerAsync({
-                          functionName: "removeAlignment",
-                          args: [selectedMarker?.address],
-                        });
-                      }}
-                    >
-                      {"Remove alignment"}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      className="btn btn-primary w-44 flex flex-col"
-                      onClick={async () => {
-                        await writeAlignmentManagerAsync({
-                          functionName: "addAlignment",
-                          value: alignmentCost,
-                          args: [selectedMarker?.address],
-                        });
+                {connectedAddress &&
+                  (isUserAlignedWithEntity ? (
+                    <>
+                      <p className="text-green-600 text-2xl">You are Based with this Region!</p>
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={async () => {
+                          await writeAlignmentManagerAsync({
+                            functionName: "removeAlignment",
+                            args: [selectedMarker?.address],
+                          });
+                        }}
+                      >
+                        {"Remove alignment"}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="btn btn-primary w-44 flex flex-col"
+                        onClick={async () => {
+                          await writeAlignmentManagerAsync({
+                            functionName: "addAlignment",
+                            value: alignmentCost,
+                            args: [selectedMarker?.address],
+                          });
 
-                        // await refetchIsUserAligned();
-                      }}
-                    >
-                      <p className="m-0 p-0">{`Get Based`}</p>
-                      <p className="m-0 p-0">{`(${formatEther(alignmentCost || BigInt(0))} ETH)`}</p>
-                    </button>
-                  </>
-                )}
+                          // await refetchIsUserAligned();
+                        }}
+                      >
+                        <p className="m-0 p-0">{`Get Based`}</p>
+                        <p className="m-0 p-0">{`(${formatEther(alignmentCost || BigInt(0))} ETH)`}</p>
+                      </button>
+                    </>
+                  ))}
               </div>
             </InfoWindow>
           )}
