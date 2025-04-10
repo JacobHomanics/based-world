@@ -30,3 +30,27 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+
+/* Override the default InfoWindow styles */
+.gm-style-iw {
+  background-color: #0052FF !important;
+  color: #fff !important;
+  padding: 0px !important;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  
+}
+
+.gm-style-iw button {
+  /*color: #333;*/ /* Style buttons inside InfoWindow if any */
+}
+
+.gm-style-iw-d {
+  overflow: hidden !important; /* Fix for content overflow */
+}
+
+.gm-ui-hover-effect {
+  color: #fff;
+}
