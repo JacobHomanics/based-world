@@ -3,8 +3,6 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { GoogleMap, InfoWindow, LoadScript, Marker } from "@react-google-maps/api";
 import { formatEther } from "viem";
 import { getAddress } from "viem";
-// import { generatePrivateKey } from "viem/accounts";
-// import { privateKeyToAddress } from "viem/accounts";
 import { useAccount } from "wagmi";
 import { useScaffoldContract, useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { locations } from "~~/locations.config";

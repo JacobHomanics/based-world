@@ -2,7 +2,7 @@ import { useState } from "react";
 import { privateKeyToAddress } from "viem/accounts";
 import { generatePrivateKey } from "viem/accounts";
 
-export function KeyGenerator({ closePopup }: any) {
+export function KeyGenerator() {
   const [isOpen, setIsOpen] = useState(false);
 
   const togglePopup = () => {
