@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { GoogleMap, InfoWindow, LoadScript, Marker } from "@react-google-maps/api";
 import { formatEther } from "viem";
+import { getAddress } from "viem";
 // import { generatePrivateKey } from "viem/accounts";
 // import { privateKeyToAddress } from "viem/accounts";
 import { useAccount } from "wagmi";
@@ -63,7 +64,7 @@ export function Map() {
 
     const scores: { [key: string]: number } = {};
     for (const location of locations) {
-      const score = await alignmentManager.read.getEntityAlignmentScore([location.address]);
+      const score = await alignmentManager.read.getEntityAlignmentScore([getAddress(location.address)]);
       scores[location.address] = Number(score);
     }
     setLocationScores(scores);
@@ -84,15 +85,6 @@ export function Map() {
   });
 
   const { writeContractAsync: writeAlignmentManagerAsync } = useScaffoldWriteContract("AlignmentManagerV1");
-
-  //   const [isOpen, setIsOpen] = useState(false);
-
-  //   const togglePopup = () => {
-  //     setIsOpen(!isOpen);
-  //   };
-
-  //   const [generatedPrivateKey, setGeneratedPrivateKey] = useState<any>(undefined);
-  //   const [generatedPublicKey, setGeneratedPublicKey] = useState<any>(undefined);
 
   return (
     <>
@@ -121,7 +113,6 @@ export function Map() {
                 <p className="m-0 text-2xl md:text-6xl text-black dark:text-white">
                   {locationScores[selectedMarker.address]}
                 </p>
-                {/* {selectedMarker.humanCount}</p> */}
                 {!connectedAddress && <ConnectButton />}
                 {connectedAddress &&
                   (isUserAlignedWithEntity ? (
@@ -181,46 +172,8 @@ export function Map() {
                 .join(", ")}
             </p>
           </div>
-
-          {/* <div>
-          <p className="text-center">{"Don't see your country?"}</p>
-          <button
-            className="btn btn-lg btn-secondary w-[150px]"
-            onClick={async () => {
-              const privateKey = generatePrivateKey();
-              const account = privateKeyToAddress(privateKey);
-
-              setGeneratedPrivateKey(privateKey);
-              setGeneratedPublicKey(account);
-              togglePopup();
-            }}
-          >
-            {"Add it!"}
-          </button>
-        </div> */}
         </div>
       )}
-
-      {/* {isOpen && (
-        <div className="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-50 flex items-center justify-center overflow-y-auto">
-          <div className="bg-base-100 p-6 rounded-lg w-full text-center shadow-lg w-[800px] mt-10 mb-10">
-            <p className="m-0">Private Key</p>
-            <p className="m-0">{generatedPrivateKey}</p>
-            <p className="m-0">Public Key</p>
-            <p className="m-0">{generatedPublicKey}</p>
-
-            <div className="mt-10">
-              <p className="text-xl">Please provide the PUBLIC key to the site admin</p>
-              <p className="text-xl">SAVE THE PRIVATE KEY SOMEWHERE SAFE</p>
-              <p className="text-xl text-rose-900">DO NOT SHARE THE PRIVATE KEY WITH ANYONE ELSE</p>
-
-              <button className="btn btn-primary w-[150px]" onClick={togglePopup}>
-                {"Close"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )} */}
     </>
   );
 }
